@@ -1,0 +1,8 @@
+gradio==3.46.0
+moviepy==1.0.3
+pytube==15.0.0
+transformers==4.33.3
+pydub==0.25.1
+pyannote.database==5.0.1
+pyannote.audio==3.0.0
+python-dotenv==1.0.0
