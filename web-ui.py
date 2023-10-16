@@ -212,6 +212,7 @@ def process_video(youtube_url, video_file, model, collar, skip, progress=gr.Prog
 
     progress(1.0, desc="Done!")
     output = format_transcription(transcription)
+    save_transcription(transcription)
     return output
 
 
