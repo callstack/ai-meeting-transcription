@@ -9,16 +9,23 @@ from dotenv import load_dotenv
 import gradio as gr
 import moviepy.editor as mp
 import datetime
+import logging
 import os
 import shutil
 
 # Load .env file
 load_dotenv()
 
+# Setup logging
+logging.basicConfig(
+    format='%(asctime)s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 # Tokens, etc
 # Hugging Face token: https://huggingface.co/docs/hub/security-tokens#user-access-tokens
 HUGGINGFACE_AUTH_TOKEN = os.getenv('HUGGINGFACE_AUTH_TOKEN')
-print("Hugging Face token:", HUGGINGFACE_AUTH_TOKEN)
+logging.debug(f"Hugging Face token: {HUGGINGFACE_AUTH_TOKEN}")
 
 TEMP_VIDEO_FILE = "temp/input.mp4"
 TEMP_AUDIO_FILE = "temp/input.wav"
@@ -35,7 +42,7 @@ def ensure_dir(path):
 def fetch_youtube(url, output_video_file, output_audio_file):
     """Fetch WAV audio from given youtube URL"""
 
-    print("Fetching audio from Youtube URL:", url)
+    logging.info(f"Fetching audio from Youtube URL: {url}")
 
     ensure_dir(output_video_file)
     ensure_dir(output_audio_file)
@@ -46,19 +53,19 @@ def fetch_youtube(url, output_video_file, output_audio_file):
     video = mp.VideoFileClip(output_video_file)
     video.audio.write_audiofile(output_audio_file, codec='pcm_s16le')
 
-    print("Done fetching audio form YouTube")
+    logging.info("Done fetching audio form YouTube")
 
 
 def extract_wav_from_video(video_file, output_audio_file):
     """Extract WAV audio from given video file"""
 
-    print("Extracting audio from video file", video_file)
+    logging.info(f"Extracting audio from video file: {video_file}")
 
     ensure_dir(output_audio_file)
     video = mp.VideoFileClip(video_file)
     video.audio.write_audiofile(output_audio_file, codec='pcm_s16le')
 
-    print("Done extracting audio from video file")
+    logging.info("Done extracting audio from video file")
 
 
 TIMESTAMP_FORMAT = "%H:%M:%S.%f"
@@ -91,7 +98,7 @@ def extract_audio_track(input_file, start_time, end_time, track_file):
 def generate_speaker_diarization(audio_file):
     """Generate speaker diarization for given audio file"""
 
-    print("Generating speaker diarization... audio_file=", audio_file)
+    logging.info(f"Generating speaker diarization... audio file: {audio_file}")
 
     pipeline = Pipeline.from_pretrained(
         "pyannote/speaker-diarization-3.0",
@@ -99,12 +106,12 @@ def generate_speaker_diarization(audio_file):
 
     result = pipeline(audio_file)
 
-    print("Done generating spearer diarization")
+    logging.info("Done generating spearer diarization")
 
     with open(TEMP_DIARIZATION_FILE, "w") as rttm:
         result.write_rttm(rttm)
 
-    print("Wrote diarization file", TEMP_DIARIZATION_FILE)
+    logging.info(f"Wrote diarization file: {TEMP_DIARIZATION_FILE}", )
 
     return result
 
@@ -112,7 +119,7 @@ def generate_speaker_diarization(audio_file):
 def generate_transcription(diarization, model, collar):
     """Generate transcription from given diarization object"""
 
-    print("Generating transcription model: ", model)
+    logging.info(f"Generating transcription... model: {model}")
 
     pipe = pipeline(
         "automatic-speech-recognition",
@@ -146,7 +153,7 @@ def generate_transcription(diarization, model, collar):
             'track_path': part_path
         })
 
-    print("Done generating transcripion. Parts: ", len(result))
+    logging.info(f"Done generating transcripion tracks: {len(result)}")
     return result
 
 
@@ -162,7 +169,7 @@ def format_transcription(transcription):
 def save_transcription(transcription):
     """Save trainscription in SubViewer format to file."""
 
-    print("Saving transcripion")
+    logging.info("Saving transcripion... to file: output.sub")
 
     f = open("output.sub", "w")
     for t in transcription:
@@ -171,7 +178,7 @@ def save_transcription(transcription):
             f"{format_timestamp(t['start'])},{format_timestamp(t['end'])}\n{t['speaker']}: {t['text']}\n\n")
     f.close()
 
-    print("Done saving transcripion")
+    logging.info("Done saving transcripion")
 
 
 def process_video(youtube_url, video_file, model, collar, skip, progress=gr.Progress()):
@@ -194,16 +201,17 @@ def process_video(youtube_url, video_file, model, collar, skip, progress=gr.Prog
         else:
             raise gr.Error("Provide either Youtube URL or video file")
     else:
-        progress(0.1, desc="Reusing local file...")
-        print("Using local file")
+        progress(0.1, desc=f"Reusing local file... {TEMP_AUDIO_FILE}")
+        logging.debug(f"Reusing local file {TEMP_AUDIO_FILE}")
 
     if "Speaker diarization" not in skip:
         progress(
             0.5, desc="Generating speaker diarization... (this may take a while)")
         diarization = generate_speaker_diarization(TEMP_AUDIO_FILE)
     else:
-        progress(0.5, desc="Using local dirization file...")
-        print("Reusing local dirization file...", TEMP_DIARIZATION_FILE)
+        progress(0.5, desc="Reusing local dirization file...")
+        logging.info(
+            f"Reusing local dirization file... {TEMP_DIARIZATION_FILE}")
         rttm = RTTMLoader(TEMP_DIARIZATION_FILE).loaded_
         diarization = rttm['input']
 
