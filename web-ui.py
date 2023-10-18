@@ -270,7 +270,7 @@ with gr.Blocks() as ui:
                 "small", "small.en",
                 "medium", "medium.en",
                 "large", "large-v2"],
-                value="base.en",
+                value="base",
                 label="Whisper Model",
                 info="Large models take more time to process and require more memory."
             )
