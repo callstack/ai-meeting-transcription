@@ -1,8 +1,6 @@
 # AI Meeting Transcription
 Repo showcasing AI meeting transcription tool.
 
-`#AI` `#Python`
-
 ## Summary
 
 This repo showcase a basic tool for meeting transcription. It's targetted at meetings conducted in English, but with little tweaking could be used for other languages as well.
@@ -65,3 +63,7 @@ The tool can be used as Jupyter Labs/Notebook as well, you open the  `Transcript
 ## Notes
 
 Speaker diarization steps is the longest part of moder execution. It roughly takes 30s for each 1 minute of the meeting to execute on M1 MacBook Pro. 
+
+## Troubleshooting
+
+1. If you get following error `"Could not download 'pyannote/segmentation-3.0' model. It might be because the model is private or gated so make sure to authenticate."` then make sure you provided [Hugging Face auth](#hugging-face-token) token AND accepted `Speaker diarization 3.0` model [terms of service](https://huggingface.co/pyannote/speaker-diarization-3.0).
