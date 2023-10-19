@@ -2,7 +2,6 @@
 Repo showcasing AI meeting transcription tool.
 
 ## Summary
-
 This repo showcase a basic tool for meeting transcription. It's targetted at meetings conducted in English, but with little tweaking could be used for other languages as well.
 
 ### Workflow
@@ -17,14 +16,6 @@ All processing is done locally on the users machine. The model weights are downl
 - Speaker Diarization 3.0 model weights around 6 MB
 - Whisper Base.en model weights around 300 MB
 
-### UI Versions
-
-This repo contains meeting transcription tool in two versions:
-- Web UI using Gradio - for people just wanting to use the tool
-- Jupyter Notebook - for people wanting to tweak and experiment with tool
-
-The processing code of these two versions is basically the same. The difference is precence or lack of the UI part.
-
 ## Setup
 
 ### Install Dependencies
@@ -32,35 +23,30 @@ The processing code of these two versions is basically the same. The difference 
 Install following dependencies (on macOS):
 
 - `ffmpeg` CLI - [`brew install ffmpeg`](https://formulae.brew.sh/formula/ffmpeg)
-- Python 3 installation - e.g. [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/)
+- Python 3 installation - e.g. [Miniconda](https://docs.conda.io/projects/miniconda/en/latest/) or [Homebrew package](https://formulae.brew.sh/formula/python@3.10).
 - Python packages - `pip3 install -r requirements.txt`
-
-If you want to run Jupyter Notebook version (optional) then you'll need to install  [Jupyter Labs install](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html#conda) as well.
 
 ### Hugging Face token
 In order to download models used by these tool you need to:
 
 1. Generate a private Hugging Face auth token - [instructions here](https://huggingface.co/docs/hub/security-tokens)
-
 2. Create `.env` file inside root repo folder with following content:
 ```env
 HUGGINGFACE_AUTH_TOKEN="your token here..."
 ```
-
 3. Accept `Speaker diarization 3.0` model terms of service - [link here](https://huggingface.co/pyannote/speaker-diarization-3.0)
-
 
 ## Running
 
 ### Web UI
 
-In order to run Web UI just run `python3 ./web-ui.sh` in the repo folder. This should open following Web UI interface:
+In order to run Web UI just run `python3 ./web-ui.sh` in the repo folder. This should open following Web UI interface in the browser.
 
 ### Jupyter Notebook
 
-The tool can be used as Jupyter Labs/Notebook as well, you open the  `Transcription.ipynb`.
+The tool can be used as Jupyter Labs/Notebook as well, you open the  `Transcription.ipynb` in [Jupyter Labs](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html#conda).
 
-## Notes
+### Notes
 
 Speaker diarization steps is the longest part of moder execution. It roughly takes 30s for each 1 minute of the meeting to execute on M1 MacBook Pro. 
 
