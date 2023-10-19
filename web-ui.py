@@ -19,13 +19,14 @@ load_dotenv()
 # Setup logging
 logging.basicConfig(
     format='%(asctime)s %(message)s',
+    level=logging.INFO,
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 
 # Tokens, etc
 # Hugging Face token: https://huggingface.co/docs/hub/security-tokens#user-access-tokens
 HUGGINGFACE_AUTH_TOKEN = os.getenv('HUGGINGFACE_AUTH_TOKEN')
-logging.debug(f"Hugging Face token: {HUGGINGFACE_AUTH_TOKEN}")
+logging.info(f"Hugging Face token: {HUGGINGFACE_AUTH_TOKEN}")
 
 TEMP_VIDEO_FILE = "temp/input.mp4"
 TEMP_AUDIO_FILE = "temp/input.wav"
@@ -244,6 +245,7 @@ with gr.Blocks() as ui:
 
             # Reset youtube URL on video upload
             video_file.upload(lambda: None, [], youtube_url)
+            youtube_url.input(lambda: None, [], video_file)
 
             start_btn = gr.Button("Start")
 
