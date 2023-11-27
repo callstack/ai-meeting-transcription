@@ -35,12 +35,13 @@ In order to download models used by these tool you need to:
 HUGGINGFACE_AUTH_TOKEN="your token here..."
 ```
 3. Accept `Speaker diarization 3.0` model terms of service - [link here](https://huggingface.co/pyannote/speaker-diarization-3.0)
+4. Accept `"Powerset" speaker segmentation` model terms of service - [link here](https://huggingface.co/pyannote/segmentation-3.0)
 
 ## Running
 
 ### Web UI
 
-In order to run Web UI just run `python3 ./web-ui.sh` in the repo folder. This should open following Web UI interface in the browser.
+In order to run Web UI just run `python3 ./web-ui.py` in the repo folder. This should open following Web UI interface in the browser.
 
 ### Jupyter Notebook
 
